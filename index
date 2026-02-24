@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正在引導至目標頁面</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 平滑漸入動畫 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-pop-in {
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="bg-[#f8fafc] flex items-center justify-center min-h-screen font-sans">
+
+    <div class="text-center p-12 bg-white rounded-[2rem] shadow-2xl shadow-blue-100/50 border border-white animate-pop-in max-w-sm w-full mx-4">
+        <!-- 圖片顯示區域 -->
+        <div class="mb-10 flex justify-center">
+            <div class="relative">
+                <!-- 裝飾用背景圓圈 -->
+                <div class="absolute -inset-4 bg-blue-50 rounded-full blur-xl opacity-50 animate-pulse"></div>
+                <img 
+                    src="https://storystudio.tw/storage/upload/ck_images/earth2.png" 
+                    alt="地球圖片" 
+                    class="relative w-44 h-auto rounded-3xl shadow-lg transition-all duration-700"
+                    onerror="this.src='https://via.placeholder.com/200?text=圖片讀取中'"
+                >
+            </div>
+        </div>
+
+        <!-- 狀態文字 -->
+        <h1 class="text-2xl font-bold text-slate-800 mb-2">
+            跳轉中，請稍後
+        </h1>
+        
+        <p class="text-slate-400 text-sm mb-10" id="countdown">
+            即將在 3 秒後自動為您導向...
+        </p>
+
+        <!-- 極簡進度條 -->
+        <div class="relative w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+            <div id="progress-bar" class="absolute top-0 left-0 bg-blue-500 h-full w-0 transition-all duration-[3000ms] ease-linear"></div>
+        </div>
+
+        <!-- 底部提示 -->
+        <div class="mt-12">
+            <!-- 這裡同步改為 replace 邏輯以符合您的需求 -->
+            <button onclick="manualRedirect()" class="inline-flex items-center text-xs text-blue-400 hover:text-blue-600 transition-colors duration-300 bg-transparent border-none cursor-pointer">
+                <span>若沒有自動跳轉，請點擊此處</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 定義目標網址
+        const targetUrl = "https://drive.google.com/file/d/1VUbAz8lxcAzRKU4svNIa-ufJ6N5MQDCZ/view";
+
+        // 手動點擊的函數也使用 replace
+        function manualRedirect() {
+            window.location.replace(targetUrl);
+        }
+
+        window.onload = function() {
+            const progressBar = document.getElementById('progress-bar');
+            const countdownText = document.getElementById('countdown');
+            let timeLeft = 3;
+
+            // 啟動視覺進度條
+            setTimeout(() => {
+                progressBar.style.width = '100%';
+            }, 100);
+
+            // 倒數計時邏輯
+            const timer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    countdownText.innerText = `即將在 ${timeLeft} 秒後自動為您導向...`;
+                } else {
+                    clearInterval(timer);
+                    countdownText.innerText = "正在開啟連結...";
+                }
+            }, 1000);
+
+            // 正式跳轉：使用 replace 避免「回上一頁」的循環問題
+            setTimeout(function() {
+                window.location.replace(targetUrl);
+            }, 3000);
+        };
+    </script>
+</body>
+</html>
